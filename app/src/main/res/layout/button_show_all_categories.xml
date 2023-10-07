@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/viewContainer"
     android:layout_width="wrap_content"
     android:layout_height="45dp"
-    android:layout_marginVertical="12dp"
+    android:layout_marginVertical="10dp"
     android:layout_marginHorizontal="8dp"
     app:cardCornerRadius="16dp"
-    app:cardBackgroundColor="@color/white">
+    app:cardBackgroundColor="@color/app_accent_color">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvCategoryName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="COMPUTADORAS"
+            android:shadowColor="@color/app_text_disabled_color"
             android:textColor="@color/app_text_disabled_color"
+            android:textSize="19sp"
             android:textStyle="bold"
-            android:textSize="19sp"/>
+            android:text="@string/app_show_categories"
+            app:drawableTint="@color/app_text_disabled_color" />
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>
