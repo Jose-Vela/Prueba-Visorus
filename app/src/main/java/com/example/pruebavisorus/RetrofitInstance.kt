@@ -5,10 +5,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitInstance {
     companion object {
-        fun getRetrofitInstance() : Retrofit {
+        fun getRetrofitInstance(baseUrl: String) : Retrofit {
             return Retrofit
                 .Builder()
-                .baseUrl("http://visorus.ddnsking.com:8091/")
+                .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
         }

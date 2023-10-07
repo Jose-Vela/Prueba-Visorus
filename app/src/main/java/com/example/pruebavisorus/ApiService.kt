@@ -7,6 +7,9 @@ interface ApiService {
     // Definimos las operaciones CRUD
 
     @GET("articulo")
-    suspend fun getArticulos() : Response<ArticuloEntity>
+    suspend fun getArticles() : Response<ArticuleEntity>
+
+    @GET("categoria")
+    suspend fun getCategories() : Response<CategoryEntity>
 
 }

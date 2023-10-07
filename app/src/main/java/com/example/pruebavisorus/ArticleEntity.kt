@@ -1,13 +1,13 @@
 package com.example.pruebavisorus
 
 
-data class ArticuloEntity(
-    val data: List<ArticuloDataResponse>,
+data class ArticuleEntity(
+    val data: List<ArticleDataResponse>,
     val total: Int
 )
-data class ArticuloDataResponse(
+data class ArticleDataResponse(
     val clave: String,
-    val categoria: CategoriaEntity,
+    val categoria: CategoryEntity,
     val nombre: String,
     val precios: List<Precio>,
     val activo: Boolean = true
