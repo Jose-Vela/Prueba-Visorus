@@ -4,6 +4,7 @@
     <string name="app_title">Bienvenido</string>
     <string name="app_categories">Categorias</string>
     <string name="app_articles">Articulos</string>
+    <string name="app_add_categories">Añadir Categoria</string>
 
     <!-- CONTENT DESCRIPTIONS -->
     <string name="app_description_add_article">Añadir nuevo articulo</string>
