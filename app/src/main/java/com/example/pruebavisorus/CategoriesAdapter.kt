@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoriesAdapter(
-    var categoriesList: List<CategoryDataResponse> = emptyList(),
+    //var categoriesList: List<CategoryDataResponse> = emptyList(),
+    var categoriesList: List<CategoryDataResponse>,
     private val onItemSelect: (Int) -> Unit,
     private val onAddCategoryClick: () -> Unit
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {

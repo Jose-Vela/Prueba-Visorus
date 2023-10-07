@@ -27,18 +27,24 @@
             style="@style/TodoSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/app_text_color"
+            android:textStyle="bold"
             android:text="@string/app_categories" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvCategories"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginTop="16dp"/>
 
         <TextView
             style="@style/TodoSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
+            android:textColor="@color/app_text_color"
+            android:textStyle="bold"
             android:text="@string/app_articles" />
 
         <androidx.recyclerview.widget.RecyclerView
