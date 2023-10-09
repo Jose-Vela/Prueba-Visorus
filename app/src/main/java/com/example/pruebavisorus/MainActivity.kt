@@ -106,10 +106,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        categoriesAdapter = CategoriesAdapter (categoriesMutableList, { position -> onItemSelected(position) }, { onAddCategoryClick() })
+        categoriesAdapter = CategoriesAdapter(
+            categoriesMutableList,
+            { position -> onItemSelected(position) },
+            { onAddCategoryClick() },
+            { onShowCategoryClick() }
+        )
         binding.rvCategories.setHasFixedSize(true)
         binding.rvCategories.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
         binding.rvCategories.adapter = categoriesAdapter
+    }
+
+    private fun onShowCategoryClick() {
+
     }
 
     private fun onAddCategoryClick() {
