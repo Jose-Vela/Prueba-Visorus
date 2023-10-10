@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:background="@color/app_background_color"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edNameCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="name"
+        android:backgroundTint="@color/white"
+        android:hint="@string/app_dialog_add_name_category"
+        android:inputType="text"
+        android:textColor="@color/app_text_color"
+        android:textColorHint="@color/app_text_disabled_color" />
+
+    <EditText
+        android:id="@+id/edKeyCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="name"
+        android:backgroundTint="@color/white"
+        android:hint="@string/app_dialog_add_key_category"
+        android:inputType="text"
+        android:textColor="@color/app_text_color"
+        android:textColorHint="@color/app_text_disabled_color" />
+
+    <EditText
+        android:id="@+id/edDateCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="name"
+        android:backgroundTint="@color/white"
+        android:hint="@string/app_dialog_add_date_category"
+        android:inputType="date|datetime"
+        android:textColor="@color/app_text_color"
+        android:textColorHint="@color/app_text_disabled_color" />
+
+    <Button
+        android:id="@+id/btnAddCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_dialog_add_category_button"
+        android:textAllCaps="true"
+        android:backgroundTint="@color/app_accent_color"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

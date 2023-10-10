@@ -11,3 +11,8 @@ data class CategoryDataResponse(
     val nombre: String,
     val activo: Boolean = true
 )
+
+data class CategoryProvider(
+    var nombre: String,
+    var isSelected: Boolean = false
+)
