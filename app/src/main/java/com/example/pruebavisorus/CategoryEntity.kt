@@ -6,13 +6,25 @@ data class CategoryEntity(
     val total: Int
 )
 data class CategoryDataResponse(
+    val id: Int,
     val clave: String,
     val fechaCreado: Long,
     val nombre: String,
-    val activo: Boolean = true
+    //val activo: Boolean = true
 )
 
 data class CategoryProvider(
-    var nombre: String,
+    //val id: Int,
+    val category: CategoryDataResponse,
     var isSelected: Boolean = false
+)
+
+data class Category(
+    val clave: String,
+    val nombre: String,
+    val fechaCreado: Long
+)
+data class CategoryEntityPost(
+    val data: CategoryDataResponse,
+    val message: String
 )

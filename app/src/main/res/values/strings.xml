@@ -6,10 +6,16 @@
     <string name="app_articles">Articulos</string>
     <string name="app_add_categories">Add</string>
     <string name="app_show_categories">Todas</string>
+
     <string name="app_dialog_add_name_category">Nombre de la categoría</string>
     <string name="app_dialog_add_key_category">Clave de la categoría</string>
     <string name="app_dialog_add_date_category">Fecha</string>
     <string name="app_dialog_add_category_button">Crear categoría</string>
+
+    <string name="app_dialog_add_name_article">Nombre del articulo</string>
+    <string name="app_dialog_add_key_article">Clave del articulo</string>
+    <string name="app_dialog_add_price_article">Nuevo precio</string>
+
 
     <!-- CONTENT DESCRIPTIONS -->
     <string name="app_description_add_article">Añadir nuevo articulo</string>

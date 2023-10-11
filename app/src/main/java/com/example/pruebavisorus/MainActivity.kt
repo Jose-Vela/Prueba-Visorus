@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pruebavisorus.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity() {
 
     private var categoriesMutableList: MutableList<CategoryProvider> = mutableListOf()
 
+    private var articlesMutableList: MutableList<ArticleDataResponse> = mutableListOf()
+
     companion object {
         val ERROR_CONECTION = 0
         val RESPONSE_NO_SUCCESSFUL = 1
@@ -51,10 +55,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initUI() {
-
+        binding.fabAddArticle.setOnClickListener { showDialogAddArticle() }
         initCategories()
         initArticles()
 
+    }
+
+    private fun showDialogAddArticle() {
+        val dialog = Dialog(this)
+        dialog.setContentView(R.layout.dialog_add_category)
+
+        val edNameArticle: EditText = dialog.findViewById(R.id.edNameArticle)
+        val edKeyArticle: EditText = dialog.findViewById(R.id.edKeyArticle)
+        val edCatArticle: Spinner = dialog.findViewById(R.id.spCatArticle)
+        val btnAddPriceArticle: Button = dialog.findViewById(R.id.btnAddPrice)
+        val btnAddArticle: Button = dialog.findViewById(R.id.btnAddCategory)
     }
 
     private fun initArticles() {
@@ -66,30 +81,74 @@ class MainActivity : AppCompatActivity() {
                     val response : ArticuleEntity = myResponse.body()!!
                     if (response.total != 0) {
                         //runOnUiThread { showArticlesResults(response.data) }
-                        runOnUiThread { showResults(response.data) }
+                        runOnUiThread { showArticlesResults(response.data) }
                     } else {
                         //runOnUiThread { showArticlesResults(emptyList()) }
-                        runOnUiThread { showResults(EMPTY_RESPONSE) }
+                        runOnUiThread { showConectionResults(EMPTY_RESPONSE) }
                     }
                 } else {
                     //runOnUiThread { showArticlesResults(emptyList()) }
-                    runOnUiThread { showResults(RESPONSE_NO_SUCCESSFUL) }
+                    runOnUiThread { showConectionResults(RESPONSE_NO_SUCCESSFUL) }
                 }
             } catch (ste: SocketTimeoutException){
                 Log.d("ERROR_CONECTION","Falló al conectarse con el servidor: ${ste.toString()}")
                 //runOnUiThread { showErrorConection() }
-                runOnUiThread { showResults(ERROR_CONECTION) }
+                runOnUiThread { showConectionResults(ERROR_CONECTION) }
             }
         }
 
-        articlesAdapter = ArticlesAdapter() { position -> onItemSelected(position) }
+        /*private var categoriesMutableList: MutableList<CategoryDataResponse> = mutableListOf(
+        CategoryDataResponse("A01",1569364107680, "COMPUTADORAS"),
+        CategoryDataResponse("A02",1569364107680, "SMARTPHONES"),
+        CategoryDataResponse("A03",1569364107680, "TABLETAS"),
+        CategoryDataResponse("A04",1569364107680, "MONITORES"),
+    )*/
+
+        /*articlesMutableList.add(ArticleDataResponse("L01",1,"Lenovo",
+            listOf(Precio(12000F), Precio(12500F))))
+
+        articlesMutableList.add(ArticleDataResponse("T01",1,"Toshiba",
+            listOf(Precio(10000F), Precio(11500F))))
+
+        articlesMutableList.add(ArticleDataResponse("S01",2,"Samnsung",
+            listOf(Precio(6500F))))
+
+        articlesMutableList.add(ArticleDataResponse("M01",2,"Motorola",
+            listOf(Precio(8000F), Precio(4500F))))
+
+        articlesMutableList.add(ArticleDataResponse("I01",3,"iPad",
+            listOf(Precio(15000F), Precio(13000F))))
+
+        articlesMutableList.add(ArticleDataResponse("G01",3,"Galaxy",
+            listOf(Precio(14000F))))
+
+        articlesMutableList.add(ArticleDataResponse("LG01",4,"LG",
+            listOf(Precio(6500F))))
+
+        articlesMutableList.add(ArticleDataResponse("BQ01",4,"BenQ",
+            listOf(Precio(8200F))))
+        */
+
+
+        articlesAdapter = ArticlesAdapter(
+            //articlesMutableList,
+            emptyList(),
+            { position -> onItemArticleSelected(position) }
+        )
         binding.rvArticles.setHasFixedSize(true)
-        binding.rvArticles.layoutManager = LinearLayoutManager(this)
+        binding.rvArticles.layoutManager = GridLayoutManager(this, 2)
         binding.rvArticles.adapter = articlesAdapter
     }
 
+    private fun onItemArticleSelected(position: Int) {
+
+    }
+
     private fun initCategories() {
-        categoriesMutableList.add(CategoryProvider("",true))
+        val todasCategory = CategoryDataResponse(0,"",0,"")
+        val add = CategoryDataResponse(-1,"",0,"")
+        categoriesMutableList.add(CategoryProvider(todasCategory, true))   //(CategoryProvider(0,"",true))
+        categoriesMutableList.add(CategoryProvider(add))   //(CategoryProvider(0,"",true))
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -98,46 +157,58 @@ class MainActivity : AppCompatActivity() {
                 if (myResponse.isSuccessful) {
                     val response : CategoryEntity = myResponse.body()!!
                     if (response.total != 0) {
+                        val index = categoriesMutableList.size-1
+                        //var newsCategories: MutableList<CategoryProvider> = mutableListOf()//= CategoryProvider(response.data)
                         //runOnUiThread { showCategoriesResults(response.data) }
-                        /*for (i in 1..response.data.size){
-                            categoriesMutableList.add(i, CategoryProvider(response.data[i].nombre))
-                        }*/
-                        runOnUiThread { showResults(response.data) }
+                        for (resp in response.data){
+                            Log.d("comprobar", "entrando en el for ${resp}")
+                            //categoriesMutableList.add(CategoryProvider(i,response.data[i].nombre))
+                            categoriesMutableList.add(index, CategoryProvider(
+                                CategoryDataResponse(
+                                    id = resp.id,
+                                    clave = resp.clave,
+                                    fechaCreado = resp.fechaCreado,
+                                    nombre = resp.nombre)
+                                )
+                            )
+                        }
+                        Log.d("comprobar", categoriesMutableList.toString())
+                        //runOnUiThread { showResults(response.data) }
+                        runOnUiThread { showCategoriesResults(categoriesMutableList) }
                     } else {
                         //runOnUiThread { showCategoriesResults(emptyList()) }
-                        runOnUiThread { showResults(EMPTY_RESPONSE) }
+                        runOnUiThread { showConectionResults(EMPTY_RESPONSE) }
                     }
                 } else {
                     //runOnUiThread { showCategoriesResults(emptyList()) }
-                    runOnUiThread { showResults(RESPONSE_NO_SUCCESSFUL) }
+                    runOnUiThread { showConectionResults(RESPONSE_NO_SUCCESSFUL) }
                 }
             } catch (ste: SocketTimeoutException){
                 Log.d("ERROR_CONECTION","Falló al conectarse con el servidor: ${ste.toString()}")
                 //runOnUiThread { showErrorConection() }
-                runOnUiThread { showResults(ERROR_CONECTION) }
+                runOnUiThread { showConectionResults(ERROR_CONECTION) }
             }
         }
 
-        /*CategoryDataResponse("A01",1569364107680, "SMARTPHONES"),
-        CategoryDataResponse("A02",1569364107680, "COMPUTADORAS"),
-        CategoryDataResponse("A03",1569364107680, "TABLETAS"),
-        CategoryDataResponse("A04",1569364107680, "MONITORES"),*/
+        /*categoriesMutableList.add(CategoryProvider(1,"COMPUTADORAS"))
+        categoriesMutableList.add(CategoryProvider(2,"SMARTPHONES"))
+        categoriesMutableList.add(CategoryProvider(3,"TABLETAS"))
+        categoriesMutableList.add(CategoryProvider(4,"MONITORES"))*/
 
-        for (i in 1..4){
-            categoriesMutableList.add(CategoryProvider("${i.toString()}"))
-        }
 
         categoriesAdapter = CategoriesAdapter(
-            categoriesMutableList,
+            //categoriesMutableList,
+            emptyList(),
             { position -> onItemSelected(position) },
-            { onAddCategoryClick() }
-        ) { onShowCategoryClick() }
+            { onAddCategoryClick() },
+            { onShowCategoryClick() }
+        )
         binding.rvCategories.setHasFixedSize(true)
         //binding.rvCategories.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false)
         binding.rvCategories.layoutManager = linearLayoutManager
         binding.rvCategories.adapter = categoriesAdapter
 
-        categoriesMutableList.add(categoriesMutableList.size, CategoryProvider(""))
+        //categoriesMutableList.add(categoriesMutableList.size, CategoryProvider(-1,""))
     }
 
     private fun onShowCategoryClick() {
@@ -200,6 +271,29 @@ class MainActivity : AppCompatActivity() {
         // ------------------------------------------------------------------------------------------------------------------
 
         categoriesAdapter.notifyItemChanged(position) // Notificamos cambios para la opción seleccionada por el usuario, la posición actual
+        updateArticles()
+    }
+
+    private fun updateArticles() {
+        /*var categoriesSelected= categoriesMutableList.filter { it.isSelected }
+        var newArticles= categoriesMutableList
+
+        for(category in categoriesSelected){
+            if(category.id == 0){
+                break
+                //newArticles
+            }
+        }
+
+        //position -> onItemArticleSelected(position)
+
+        /*if(categoriesMutableList[0].isSelected){
+            newArticles = articlesMutableList
+        }*/
+
+        Log.d("UpdateList",newArticles.toString())
+        articlesAdapter.articlesList = listOf(newArticles as ArticleDataResponse)
+        articlesAdapter.notifyDataSetChanged()*/
     }
 
     private fun showDialogAddCategory() {
@@ -217,30 +311,88 @@ class MainActivity : AppCompatActivity() {
             val currentDateCategory = edDateCategory.text.toString()
 
             if(currentNameCategory.isNotEmpty() && currentKeyCategory.isNotEmpty() && currentDateCategory.isNotEmpty()){
-                val currentCategory = CategoryDataResponse(currentKeyCategory, currentDateCategory.toLong(), currentNameCategory)
+                //val currentCategory = CategoryDataResponse(currentKeyCategory, currentDateCategory.toLong(), currentNameCategory)
 
-                categoriesMutableList.add(categoriesMutableList.size-1, CategoryProvider(currentNameCategory))
-                categoriesAdapter.notifyItemInserted(categoriesMutableList.size-1)
+                val currentCategory = Category(
+                    clave = currentKeyCategory,
+                    nombre = currentNameCategory,
+                    fechaCreado = currentDateCategory.toLong()
+                )
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val myResponse: Response<CategoryEntityPost> =
+                            retrofitInstance.create(ApiService::class.java).postCategories(currentCategory)
+                        Log.d("Add-Category", myResponse.toString())
+                        if (myResponse.isSuccessful) {
+                            val response : CategoryEntityPost = myResponse.body()!!
+                            if (response.message != "") {
+                                val index = categoriesMutableList.size-1
+                                //for (resp in response.data){
+                                    Log.d("comprobar", "entrando en el for ${response}")
+                                    //categoriesMutableList.add(CategoryProvider(i,response.data[i].nombre))
+                                    categoriesMutableList.add(index, CategoryProvider(
+                                        CategoryDataResponse(
+                                            id = response.data.id,
+                                            clave = response.data.clave,
+                                            fechaCreado = response.data.fechaCreado,
+                                            nombre = response.data.nombre)
+                                    )
+                                    )
+                               // }
+                                Log.d("Add-Category", categoriesMutableList.toString())
+                                runOnUiThread { showCategoriesResults(categoriesMutableList) }
+                            } else {
+                                runOnUiThread { showConectionResults(EMPTY_RESPONSE) }
+                            }
+                        } else {
+                            runOnUiThread { showConectionResults(RESPONSE_NO_SUCCESSFUL) }
+                        }
+                    } catch (ste: SocketTimeoutException){
+                        runOnUiThread { showConectionResults(ERROR_CONECTION) }
+                    }
+                }
+
+                //categoriesMutableList.add(categoriesMutableList.size-1, CategoryProvider(categoriesMutableList.size-1, currentNameCategory))
+                //categoriesAdapter.notifyItemInserted(categoriesMutableList.size-1)
                 dialog.hide()
             }
         }
 
         dialog.show()
-        Log.d("DEBUG", "Tamaño: ${categoriesMutableList.size},  ${categoriesMutableList.indices}, ${categoriesMutableList}")
+        //Log.d("DEBUG", "Tamaño: ${categoriesMutableList.size},  ${categoriesMutableList.indices}, ${categoriesMutableList}")
     }
 
-    /*private fun showCategoriesResults(result: List<CategoryDataResponse>) {
+    private fun showCategoriesResults(result: List<CategoryProvider>) {
         categoriesAdapter.updateList(result)
-    }*/
+    }
 
-    /*private fun showArticlesResults(result: List<ArticleDataResponse>) {
+    private fun showArticlesResults(result: List<ArticleDataResponse>) {
         articlesAdapter.updateList(result)
-    }*/
+    }
 
-    private fun <T> showResults(result: T) {
+    private fun showConectionResults(value: Int) {
+        var textToast: String = ""
+
+        when {
+            value == ERROR_CONECTION -> {  textToast = "ERROR AL CONECTARSE CON EL SERVIDOR" }
+
+            value == RESPONSE_NO_SUCCESSFUL -> { textToast = "RESPUESTA FALLIDA DEL SERVIDOR" }
+
+            value == EMPTY_RESPONSE -> { textToast = "RESPUESTA CON DATOS VACIOS" }
+        }
+
+        val toast = Toast.makeText(this, "Error de conexión", Toast.LENGTH_LONG)
+        toast.show()
+    }
+
+    /*private fun <T> showResults(result: List<T>) {
+        Log.d("TEST_SHOWRESULTS", result.toString())
         var textToast: String = ""
         when(result){
-            is CategoryDataResponse -> { categoriesAdapter.updateList(listOf(result as CategoryProvider)) }
+            is CategoryDataResponse -> {
+                Log.d("TEST_SHOWRESULTS", "Dentro: ${result}")
+                categoriesAdapter.updateList(listOf(result)) }
 
             is ArticleDataResponse -> { articlesAdapter.updateList(listOf(result))}
 
@@ -257,10 +409,5 @@ class MainActivity : AppCompatActivity() {
             Log.d("RESULT IS INT", textToast)
             Toast.makeText(applicationContext, textToast, Toast.LENGTH_LONG).show()
         }
-    }
-
-    /*private fun showErrorConection() {
-        val toast = Toast.makeText(this, "Error de conexión", Toast.LENGTH_LONG)
-        toast.show()
     }*/
 }

@@ -15,8 +15,7 @@ class CategoriesViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         onItemSelect: (Int) -> Unit
     ) {
         if(layoutPosition > 0 && layoutPosition < categoriesListSize - 1){
-            Log.d("DEBUG", "LayoutPosition: ${layoutPosition} = ${category.nombre}")
-            binding.tvCategoryName.text = category.nombre    // Asignamos el nombre correspondiente al textView de cada item
+            binding.tvCategoryName.text = category.category.nombre    // Asignamos el nombre correspondiente al textView de cada item
         }
         binding.root.setOnClickListener { onItemSelect(layoutPosition) }
 
