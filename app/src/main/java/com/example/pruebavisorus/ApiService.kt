@@ -1,7 +1,9 @@
 package com.example.pruebavisorus
 
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 
 interface ApiService {
     // Definimos las operaciones CRUD
@@ -11,5 +13,8 @@ interface ApiService {
 
     @GET("categoria")
     suspend fun getCategories() : Response<CategoryEntity>
+
+    @POST("categoria")
+    suspend fun postCategories(@Body category: Category) : Response<CategoryEntityPost>
 
 }

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class ArticlesAdapter(
     var articlesList: List<ArticleDataResponse> = emptyList(),
-    private val onItemSelect: (Int) -> Unit): RecyclerView.Adapter<ArticlesViewHolder>() {
+    private val onItemArticleSelected: (Int) -> Unit): RecyclerView.Adapter<ArticlesViewHolder>() {
 
     fun updateList(articleList: List<ArticleDataResponse>) {
         this.articlesList = articleList
@@ -22,7 +22,7 @@ class ArticlesAdapter(
     override fun getItemCount() = articlesList.size
 
     override fun onBindViewHolder(viewholder: ArticlesViewHolder, position: Int) {
-        viewholder.render(articlesList[position], onItemSelect)
+        viewholder.render(articlesList[position], onItemArticleSelected)
     }
 
 }

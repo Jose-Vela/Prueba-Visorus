@@ -1,12 +1,14 @@
 package com.example.pruebavisorus
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class CategoriesAdapter(
     //var categoriesList: List<CategoryDataResponse> = emptyList(),
-    var categoriesList: MutableList<CategoryProvider>,
+    //var categoriesList: MutableList<CategoryProvider>,
+    var categoriesList: List<CategoryProvider> = emptyList(),
     private val onItemSelect: (Int) -> Unit,
     private val onAddCategoryClick: () -> Unit,
     private val onShowCategoryClick: () -> Unit
@@ -19,7 +21,7 @@ class CategoriesAdapter(
     }
 
     fun updateList(categoryList: List<CategoryProvider>) {
-        this.categoriesList = categoryList.toMutableList()
+        this.categoriesList = categoryList  //.toMutableList()
         notifyDataSetChanged()
     }
 
@@ -77,10 +79,13 @@ class CategoriesAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return if(position == 0){
+            Log.d("CAT_ADAP", "SHOW")
             VIEW_TYPE_SHOW_BUTTON
         } else if (position < categoriesList.size - 1) {
+            Log.d("CAT_ADAP", "CATEGORY")
             VIEW_TYPE_CATEGORY
         } else {
+            Log.d("CAT_ADAP", "ADD")
             VIEW_TYPE_ADD_BUTTON
         }
     }
