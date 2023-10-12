@@ -1,11 +1,19 @@
 package com.example.pruebavisorus
 
+import android.app.AlertDialog
 import android.app.Dialog
+import android.content.res.ColorStateList
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputType
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,6 +30,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var retrofitInstance: Retrofit
+
+    private lateinit var lyPrices: LinearLayout
 
     private lateinit var categoriesAdapter : CategoriesAdapter
     private lateinit var articlesAdapter : ArticlesAdapter
@@ -63,13 +73,77 @@ class MainActivity : AppCompatActivity() {
 
     private fun showDialogAddArticle() {
         val dialog = Dialog(this)
-        dialog.setContentView(R.layout.dialog_add_category)
+        dialog.setContentView(R.layout.dialog_add_article)
+
+        // ---------------------- DIALOGO DE ALERTA ---------------------------------
+        val okSpannable = SpannableString("OK")
+        okSpannable.setSpan(ForegroundColorSpan(getColor(R.color.app_accent_color)),
+            0, okSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle("CAMPO DE PRECIO VACIO")
+        alertDialog.setMessage("Agrega un valor al/a los campo(s) de precio anterior(es) para poder crear uno más.")
+        alertDialog.setPositiveButton(okSpannable, null)
+        // ----------------------------------------- ---------------------------------
+
+        lyPrices = dialog.findViewById(R.id.layoutPrices)
+
+        val listEdPrices: MutableList<EditText> = mutableListOf()
+        val prices: MutableList<Int> = mutableListOf()
 
         val edNameArticle: EditText = dialog.findViewById(R.id.edNameArticle)
         val edKeyArticle: EditText = dialog.findViewById(R.id.edKeyArticle)
         val edCatArticle: Spinner = dialog.findViewById(R.id.spCatArticle)
         val btnAddPriceArticle: Button = dialog.findViewById(R.id.btnAddPrice)
-        val btnAddArticle: Button = dialog.findViewById(R.id.btnAddCategory)
+        val btnAddArticle: Button = dialog.findViewById(R.id.btnAddArticle)
+
+        btnAddPriceArticle.setOnClickListener {
+            var count = 0
+
+            if(listEdPrices.isEmpty()){
+                listEdPrices.add(addFieldPrice())
+            } else {
+                for(edPrices in listEdPrices){
+                    if(edPrices.text.isEmpty()){
+                        count += 1
+                    }
+                }
+
+                if(count > 0) {
+                    alertDialog.show()
+                } else {
+                    listEdPrices.add(addFieldPrice())
+                }
+            }
+        }
+
+        btnAddArticle.setOnClickListener {
+            for(edPrices in listEdPrices){
+                prices.add(edPrices.text.toString().toInt())
+            }
+
+            Log.d("BTN_ADD_ARTICLE", prices.toString())
+        }
+
+        dialog.show()
+
+    }
+
+    private fun addFieldPrice() : EditText {
+        val newEditText = EditText(this)
+
+        newEditText.backgroundTintList = ColorStateList.valueOf(getColor(R.color.white))
+        newEditText.hint = getString(R.string.app_dialog_add_price_article_new_edittext)
+        newEditText.setHintTextColor(getColor(R.color.app_text_disabled_color))
+        newEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        newEditText.setTextColor(getColor(R.color.app_text_color))
+        newEditText.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        lyPrices.addView(newEditText)
+        return  newEditText
     }
 
     private fun initArticles() {
