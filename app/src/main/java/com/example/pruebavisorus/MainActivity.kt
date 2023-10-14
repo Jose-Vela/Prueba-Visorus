@@ -118,11 +118,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnAddArticle.setOnClickListener {
+            var count = 0
+
             for(edPrices in listEdPrices){
-                prices.add(edPrices.text.toString().toInt())
+                if(edPrices.text.isEmpty()){
+                    count += 1
+                } else {
+                    prices.add(edPrices.text.toString().toInt())
+                }
             }
 
-            Log.d("BTN_ADD_ARTICLE", prices.toString())
+            if(count > 0){
+                prices.clear()
+                alertDialog.setMessage("Ningun campo de precio debe estar vacío")
+                alertDialog.show()
+            } else {
+                Log.d("BTN_ADD_SUCCES", prices.toString())
+            }
         }
 
         dialog.show()
