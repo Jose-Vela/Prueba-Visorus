@@ -81,8 +81,6 @@ class MainActivity : AppCompatActivity() {
             0, okSpannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle("CAMPO DE PRECIO VACIO")
-        alertDialog.setMessage("Agrega un valor al/a los campo(s) de precio anterior(es) para poder crear uno más.")
         alertDialog.setPositiveButton(okSpannable, null)
         // ----------------------------------------- ---------------------------------
 
@@ -110,6 +108,8 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if(count > 0) {
+                    alertDialog.setTitle("CAMPO DE PRECIO VACIO")
+                    alertDialog.setMessage("Agrega un valor al/a los campo(s) de precio anterior(es) para poder crear uno más.")
                     alertDialog.show()
                 } else {
                     listEdPrices.add(addFieldPrice())
@@ -118,22 +118,26 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnAddArticle.setOnClickListener {
-            var count = 0
+            var priceFieldCompleted = false
 
             for(edPrices in listEdPrices){
                 if(edPrices.text.isEmpty()){
-                    count += 1
+                    priceFieldCompleted = false
+                    break
                 } else {
+                    priceFieldCompleted = true
                     prices.add(edPrices.text.toString().toInt())
                 }
             }
 
-            if(count > 0){
-                prices.clear()
-                alertDialog.setMessage("Ningun campo de precio debe estar vacío")
-                alertDialog.show()
-            } else {
+            if(priceFieldCompleted && edNameArticle.text.isNotEmpty() && edKeyArticle.text.isNotEmpty()){
                 Log.d("BTN_ADD_SUCCES", prices.toString())
+                dialog.hide()
+            } else {
+                prices.clear()
+                alertDialog.setTitle("Campo(s) vacio(s)")
+                alertDialog.setMessage("Ningun campo debe estar vacío")
+                alertDialog.show()
             }
         }
 
