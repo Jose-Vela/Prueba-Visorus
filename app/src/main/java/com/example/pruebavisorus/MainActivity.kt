@@ -11,6 +11,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -94,6 +95,12 @@ class MainActivity : AppCompatActivity() {
         val edCatArticle: Spinner = dialog.findViewById(R.id.spCatArticle)
         val btnAddPriceArticle: Button = dialog.findViewById(R.id.btnAddPrice)
         val btnAddArticle: Button = dialog.findViewById(R.id.btnAddArticle)
+
+        var optionsCategories: MutableList<String> = mutableListOf("Seleccione una opción")
+        optionsCategories.addAll(1,  categoriesMutableList.filter { it.category.id != 0 && it.category.id != -1}.map { it.category.nombre })
+        edCatArticle.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, optionsCategories)
+
+        Log.d("OPTIONS_SPINNER", optionsCategories.toString())
 
         btnAddPriceArticle.setOnClickListener {
             var count = 0
@@ -287,8 +294,8 @@ class MainActivity : AppCompatActivity() {
 
 
         categoriesAdapter = CategoriesAdapter(
-            //categoriesMutableList,
-            emptyList(),
+            categoriesMutableList,
+            //emptyList(),
             { position -> onItemSelected(position) },
             { onAddCategoryClick() },
             { onShowCategoryClick() }
@@ -409,6 +416,18 @@ class MainActivity : AppCompatActivity() {
                     fechaCreado = currentDateCategory.toLong()
                 )
 
+                /* Opcional, para cuando sabemos que el servidor no responde y queremos agregar
+                  Categorias temporales en tiempo de ejecución*/
+                val index = categoriesMutableList.size-1
+                categoriesMutableList.add(index, CategoryProvider(
+                    CategoryDataResponse(
+                        id = index,
+                        clave = currentKeyCategory,
+                        fechaCreado = currentDateCategory.toLong(),
+                        nombre = currentNameCategory)
+                    )
+                )
+
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         val myResponse: Response<CategoryEntityPost> =
@@ -429,7 +448,6 @@ class MainActivity : AppCompatActivity() {
                                             nombre = response.data.nombre)
                                     )
                                     )
-                               // }
                                 Log.d("Add-Category", categoriesMutableList.toString())
                                 runOnUiThread { showCategoriesResults(categoriesMutableList) }
                             } else {
